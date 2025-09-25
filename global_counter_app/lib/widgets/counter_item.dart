@@ -17,60 +17,71 @@ class CounterItem extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(20),
-        onTap: () => _showEditDialog(context, state, index),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 350),
-          curve: Curves.easeInOut,
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            gradient: LinearGradient(
-              colors: [
-                // Ganti withOpacity -> withValues(alpha: ...)
-                counter.color.withValues(alpha: 0.40),
-                counter.color.withValues(alpha: 0.60),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeInOut,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(
+            colors: [
+              counter.color.withValues(alpha: 0.40),
+              counter.color.withValues(alpha: 0.60),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-          child: Row(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.remove, color: Colors.white),
-                onPressed: () => state.decrement(index),
-              ),
-              Expanded(
-                child: Center(
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    transitionBuilder: (child, anim) =>
-                        ScaleTransition(scale: anim, child: child),
-                    child: Text(
-                      "${counter.label}: ${counter.value}",
-                      key: ValueKey(counter.value),
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+        ),
+        child: Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.remove, color: Colors.white),
+              onPressed: () => state.decrement(index),
+            ),
+            Expanded(
+              child: Center(
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  transitionBuilder: (child, anim) =>
+                      ScaleTransition(scale: anim, child: child),
+                  child: Row(
+                    key: ValueKey(counter.value),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "${counter.label}: ${counter.value}",
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
+                      const SizedBox(width: 8),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.edit,
+                          color: Colors.white70,
+                          size: 20,
+                        ),
+                        tooltip: "Edit counter name",
+                        onPressed: () => _showEditDialog(context, state, index),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              IconButton(
-                icon: const Icon(Icons.add, color: Colors.white),
-                onPressed: () => state.increment(index),
-              ),
-              const SizedBox(width: 4),
-              IconButton(
-                icon: const Icon(Icons.delete, color: Colors.white70),
-                onPressed: () => state.removeCounter(index),
-                tooltip: "Delete counter",
-              ),
-            ],
-          ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.add, color: Colors.white),
+              onPressed: () => state.increment(index),
+            ),
+            const SizedBox(width: 4),
+            IconButton(
+              icon: const Icon(Icons.delete, color: Colors.white70),
+              onPressed: () => state.removeCounter(index),
+              tooltip: "Delete counter",
+            ),
+          ],
         ),
       ),
     );
@@ -99,7 +110,6 @@ class CounterItem extends StatelessWidget {
               children: Colors.primaries.map((c) {
                 return GestureDetector(
                   onTap: () {
-                    // juga ganti preview ke withValues:
                     state.changeColor(index, c.withValues(alpha: 0.6));
                     Navigator.pop(context);
                   },
